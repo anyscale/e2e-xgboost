@@ -2,7 +2,7 @@
 
 <div align="left">
 <a target="_blank" href="https://console.anyscale.com/"><img src="https://img.shields.io/badge/🚀 Run_on-Anyscale-9hf"></a>&nbsp;
-<a href="https://github.com/anyscale/TODO-XGBOOST-REPO-HERE" role="button"><img src="https://img.shields.io/static/v1?label=&amp;message=View%20On%20GitHub&amp;color=586069&amp;logo=github&amp;labelColor=2f363d"></a>&nbsp;
+<a href="https://github.com/anyscale/e2e-xgboost" role="button"><img src="https://img.shields.io/static/v1?label=&amp;message=View%20On%20GitHub&amp;color=586069&amp;logo=github&amp;labelColor=2f363d"></a>&nbsp;
 </div>
 
 
@@ -27,7 +27,7 @@ We're developing our application on [Anyscale Workspaces](https://docs.anyscale.
 Learn more about Anyscale Workspaces through the [official documentation](https://docs.anyscale.com/platform/workspaces/).
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/anyscale/FIXME/refs/heads/main/images/compute.png" width=600>
+  <img src="https://raw.githubusercontent.com/anyscale/e2e-xgboost/refs/heads/main/images/compute.png" width=600>
 </div>
 
 ### Production
