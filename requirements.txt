@@ -1,0 +1,9 @@
+matplotlib==3.10.0
+scikit-learn==1.6.0
+mlflow==2.19.0
+ipywidgets
+pre-commit==4.1.0
+xgboost
+ray[data,train,serve]
+mlflow
+nbformat
