@@ -8,12 +8,19 @@
 
 ### Overview
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/anyscale/e2e-xgboost/refs/heads/main/images/overview.png" width=800>
+</div>
+
 In this tutorial, we'll implement an end-to-end XGBoost application on Anyscale, covering:
+
 
 - **Distributed data preprocessing and model training**: Ingest and preprocess data at scale using [Ray Data](https://docs.ray.io/en/latest/data/data.html). Then, train a distributed [XGBoost model](https://xgboost.readthedocs.io/en/stable/python/index.html) using [Ray Train](https://docs.ray.io/en/latest/train/train.html) (`notebooks/01-Distributed_Training.ipynb`)
 - **Model Validation using Offline Inference**: Evaluate the model using Ray Data offline batch inference (`notebooks/02-Validation.ipynb`).
 - **Online Model Serving**: Deploy the model as a scalable online service using [Ray Serve](https://docs.ray.io/en/latest/serve/index.html). (e.g., `notebooks/03-Serving.ipynb`)
 - **Productionization**: Create production batch [**Jobs**](https://docs.anyscale.com/platform/jobs/) for offline workloads (data prep, training, batch prediction) and potentially online [**Services**](https://docs.anyscale.com/platform/services/).
+
+
 
 ### Development
 
