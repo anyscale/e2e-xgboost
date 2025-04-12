@@ -1,7 +1,10 @@
 import os
 
-if os.path.exists("/mnt/cluster_storage/"):  # running on Anyscale
-    local_storage_path = "/mnt/cluster_storage/"
+# on Anyscale, /mnt/user_storage/ is persisted for the user
+# across jobs and clusters
+# https://docs.anyscale.com/configuration/storage/#storage-shared-across-nodes
+if os.path.exists("/mnt/user_storage/"):
+    local_storage_path = "/mnt/user_storage/"
 else:
     local_storage_path = "/tmp/"
 
