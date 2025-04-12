@@ -121,3 +121,4 @@ if __name__ == "__main__":
     result: Result = trainer.fit()
 
     log_run_to_mlflow(model_config, result, preprocessor_path)
+    print("Training complete")
