@@ -9,7 +9,7 @@ import xgboost
 import pandas as pd
 
 
-def transform_with_preprocessor(batch_df):
+def transform_with_preprocessor(batch_df, preprocessor):
     # The preprocessor does not know about the `target` column,
     # so we need to remove it temporarily then add it back
     target = batch_df.pop("target")
@@ -19,8 +19,8 @@ def transform_with_preprocessor(batch_df):
 
 
 class Validator:
-    def __init__(self, model):
-        self.model = model
+    def __init__(self):
+        _, self.model = load_model_and_preprocessor()
 
     def __call__(self, batch: pd.DataFrame) -> pd.DataFrame:
         # remove the target column for inference
@@ -52,13 +52,15 @@ if __name__ == "__main__":
 
     # Apply the transformation to each batch
     test_dataset = test_dataset.map_batches(
-        transform_with_preprocessor, batch_format="pandas", batch_size=1000
+        transform_with_preprocessor,
+        fn_constructor_kwargs={"preprocessor": preprocessor},
+        batch_format="pandas",
+        batch_size=1000,
     )
 
     # Make predictions
     test_predictions = test_dataset.map_batches(
         Validator,
-        fn_constructor_kwargs={"model": model},
         concurrency=4,  # Number of model replicas
         batch_format="pandas",
     )

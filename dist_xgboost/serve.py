@@ -14,9 +14,8 @@ import xgboost
 
 @serve.deployment
 class XGBoostModel:
-    def __init__(self, preprocessor, model):
-        self.model = model
-        self.preprocessor = preprocessor
+    def __init__(self):
+        self.preprocessor, self.model = load_model_and_preprocessor()
 
     def pythonic_call(self, input_data: dict) -> dict:
         # Convert to DataFrame
@@ -35,11 +34,9 @@ class XGBoostModel:
         return self.pythonic_call(input_data)
 
 
+xgboost_model = XGBoostModel.bind()
+
 if __name__ == "__main__":
-    preprocessor, model = load_model_and_preprocessor()
-
-    xgboost_model = XGBoostModel.bind(preprocessor, model)
-
     handle: DeploymentHandle = serve.run(
         xgboost_model, name="xgboost-breast-cancer-classifier"
     )
