@@ -11,6 +11,5 @@ else:
 preprocessor_fname = "preprocessor.pkl"
 preprocessor_path = os.path.join(local_storage_path, preprocessor_fname)
 model_fname = "model.ubj"  # name used by XGBoost
-home_dir = os.path.expanduser("~")
-model_registry = os.path.join(home_dir, "mlflow")
+model_registry = os.path.join(local_storage_path, "mlflow")
 experiment_name = "breast_cancer_all_features"
