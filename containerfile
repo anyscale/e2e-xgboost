@@ -12,7 +12,7 @@ RUN python3 -m pip install --no-cache-dir \
     scikit-learn==1.6.0 \
     mlflow==2.19.0 \
     xgboost \
-    "ray[data,train,serve]" \
+    "ray[data,train,serve]"
 
 # Add other build commands here.
 # RUN echo "Testing Ray import..." && python -c "import ray"
