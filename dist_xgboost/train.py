@@ -8,7 +8,7 @@ os.environ["RAY_TRAIN_V2_ENABLED"] = "1"
 import ray
 
 from dist_xgboost.constants import preprocessor_path, local_storage_path
-from .data import log_run_to_mlflow, prepare_data
+from dist_xgboost.data import log_run_to_mlflow, prepare_data
 from ray.data.preprocessors import StandardScaler
 from ray.train import CheckpointConfig, RunConfig, ScalingConfig, Result
 
