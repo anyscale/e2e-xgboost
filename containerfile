@@ -6,15 +6,13 @@ FROM anyscale/ray:2.44.1-slim-py312-cu123
 #     && sudo rm -f /etc/apt/sources.list.d/*
 
 
-# Copy requirements.txt from the build context to the container
-COPY requirements.txt .
-
-# Install dependencies from requirements.txt in the same directory
+# Install dependencies
 # Disable cache for a smaller image to optimize build and cluster startup time.
-RUN python3 -m pip install --no-cache-dir -r requirements.txt
-
-# Remove requirements.txt from the container
-RUN rm requirements.txt
+RUN python3 -m pip install --no-cache-dir \
+    scikit-learn==1.6.0 \
+    mlflow==2.19.0 \
+    xgboost \
+    "ray[data,train,serve]" \
 
 # Add other build commands here.
 # RUN echo "Testing Ray import..." && python -c "import ray"
