@@ -14,7 +14,5 @@ RUN python3 -m pip install --no-cache-dir \
     xgboost==3.0.0 \
     "ray[data,train,serve]>=2.44.1"
 
-RUN python3 -m pip install --no-cache-dir -e .
-
 # Add other build commands here.
 # RUN echo "Testing Ray import..." && python -c "import ray"
