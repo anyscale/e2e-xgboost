@@ -1,6 +1,6 @@
 # pyproject.toml
 [project]
-name = "e2e-xgboost"
+name = "dist-xgboost"
 version = "0.1.0"
 requires-python = ">=3.12"
 
