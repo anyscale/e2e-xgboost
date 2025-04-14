@@ -26,3 +26,10 @@ ignore = ["E501", "E226"]
 
 [tool.ruff.format]
 quote-style = "double"
+
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["dist_xgboost*"]
