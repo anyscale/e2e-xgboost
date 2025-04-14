@@ -2,11 +2,11 @@ import os
 
 os.environ["RAY_TRAIN_V2_ENABLED"] = "1"
 
-from dist_xgboost.data import load_model_and_preprocessor, prepare_data
-
-from sklearn.metrics import confusion_matrix
-import xgboost
 import pandas as pd
+import xgboost
+from sklearn.metrics import confusion_matrix
+
+from dist_xgboost.data import load_model_and_preprocessor, prepare_data
 
 
 def transform_with_preprocessor(batch_df, preprocessor):
@@ -66,9 +66,7 @@ if __name__ == "__main__":
     )
 
     # Calculate confusion matrix
-    test_results = test_predictions.map_batches(
-        confusion_matrix_batch, batch_format="pandas", batch_size=1000
-    )
+    test_results = test_predictions.map_batches(confusion_matrix_batch, batch_format="pandas", batch_size=1000)
 
     # Calculate metrics
     # Sum all confusion matrix values across batches
@@ -84,9 +82,7 @@ if __name__ == "__main__":
     accuracy = (tp + tn) / (tp + tn + fp + fn)
     precision = tp / (tp + fp) if (tp + fp) > 0 else 0
     recall = tp / (tp + fn) if (tp + fn) > 0 else 0
-    f1 = (
-        2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
-    )
+    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0
 
     metrics = {"precision": precision, "recall": recall, "f1": f1, "accuracy": accuracy}
 

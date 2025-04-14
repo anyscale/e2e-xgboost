@@ -1,42 +1,37 @@
 import os
-from typing import Tuple
-from ray.data import Dataset
-import ray
-import mlflow
-from urllib.parse import urlparse
-
+import pickle
 import shutil
 from tempfile import TemporaryDirectory
-from dist_xgboost.constants import (
-    model_registry,
-    model_fname,
-    preprocessor_fname,
-    experiment_name,
-)
-from ray.train.xgboost import RayTrainReportCallback
+from typing import Tuple
+from urllib.parse import urlparse
+
+import mlflow
+import ray
+from ray.data import Dataset
 from ray.train import Checkpoint
-import pickle
+from ray.train.xgboost import RayTrainReportCallback
+
+from dist_xgboost.constants import (
+    experiment_name,
+    model_fname,
+    model_registry,
+    preprocessor_fname,
+)
 
 
 def prepare_data() -> Tuple[Dataset, Dataset, Dataset]:
     """Load and split the dataset into train, validation, and test sets."""
     dataset = ray.data.read_csv("s3://anonymous@air-example-data/breast_cancer.csv")
     seed = 42
-    train_dataset, rest = dataset.train_test_split(
-        test_size=0.3, shuffle=True, seed=seed
-    )
+    train_dataset, rest = dataset.train_test_split(test_size=0.3, shuffle=True, seed=seed)
     # 15% for validation, 15% for testing
-    valid_dataset, test_dataset = rest.train_test_split(
-        test_size=0.5, shuffle=True, seed=seed
-    )
+    valid_dataset, test_dataset = rest.train_test_split(test_size=0.5, shuffle=True, seed=seed)
     return train_dataset, valid_dataset, test_dataset
 
 
 def get_best_model_from_registry():
     mlflow.set_tracking_uri(f"file:{model_registry}")
-    sorted_runs = mlflow.search_runs(
-        experiment_names=[experiment_name], order_by=["metrics.validation_error ASC"]
-    )
+    sorted_runs = mlflow.search_runs(experiment_names=[experiment_name], order_by=["metrics.validation_error ASC"])
     best_run = sorted_runs.iloc[0]
     best_artifacts_dir = urlparse(best_run.artifact_uri).path
     return best_run, best_artifacts_dir
@@ -69,9 +64,7 @@ def log_run_to_mlflow(model_config, result, preprocessor_path):
 
     # create a new experiment and log metrics and artifacts
     mlflow.set_experiment(experiment_name)
-    with mlflow.start_run(
-        description="xgboost breast cancer classifier on all features"
-    ):
+    with mlflow.start_run(description="xgboost breast cancer classifier on all features"):
         mlflow.log_params(model_config)
         mlflow.log_metrics(result.metrics)
 

@@ -1,15 +1,15 @@
 import os
 
-
 os.environ["RAY_TRAIN_V2_ENABLED"] = "1"
 
-from dist_xgboost.data import load_model_and_preprocessor
-from ray import serve
-from ray.serve.handle import DeploymentHandle
-from starlette.requests import Request
 import pandas as pd
 import requests
 import xgboost
+from ray import serve
+from ray.serve.handle import DeploymentHandle
+from starlette.requests import Request
+
+from dist_xgboost.data import load_model_and_preprocessor
 
 
 @serve.deployment
@@ -37,9 +37,7 @@ class XGBoostModel:
 xgboost_model = XGBoostModel.bind()
 
 if __name__ == "__main__":
-    handle: DeploymentHandle = serve.run(
-        xgboost_model, name="xgboost-breast-cancer-classifier"
-    )
+    handle: DeploymentHandle = serve.run(xgboost_model, name="xgboost-breast-cancer-classifier")
 
     sample_input = {
         "mean radius": 14.9,
