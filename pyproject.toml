@@ -38,10 +38,7 @@ exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
-ignore = ["E501", "W503", "E226"]
+ignore = ["E501", "E226"]
 
 [tool.ruff.format]
 quote-style = "double"
-
-[tool.ruff.lint.isort]
-profile = "black"
