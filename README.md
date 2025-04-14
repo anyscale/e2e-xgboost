@@ -22,19 +22,13 @@ In this tutorial, we'll implement an end-to-end XGBoost application on Anyscale,
 
 
 ### Dependencies
-Install the dependencies using `uv`:
+Install the dependencies using `pip`:
 
 ```bash
-# Install uv if needed
-# https://docs.astral.sh/uv/getting-started/installation/
-# curl -LsSf https://astral.sh/uv/install.sh | sh
-uv venv --python 3.12 .venv && source .venv/bin/activate
-uv sync
+pip install -r requirements.txt
 # For development, install the dev dependencies:
-# uv sync --all-extras
+pip install -r requirements_dev.txt
 ```
-
-This will create a virtualenv in `.venv` with all the project dependencies.
 
 ### Development
 
