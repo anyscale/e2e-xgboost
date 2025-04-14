@@ -1,4 +1,17 @@
 # pyproject.toml
+[project]
+name = "e2e-xgboost"
+version = "0.0.1"
+dependencies = [
+    "ipywidgets>=8.1.6",
+    "matplotlib==3.10.0",
+    "mlflow==2.19.0",
+    "nbformat>=5.10.4",
+    "pre-commit==4.1.0",
+    "ray[data,serve,train]>=2.44.1",
+    "scikit-learn==1.6.0",
+    "xgboost>=3.0.0",
+]
 
 [tool.black]
 line-length = 150

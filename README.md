@@ -21,6 +21,14 @@ In this tutorial, we'll implement an end-to-end XGBoost application on Anyscale,
 - **Productionization**: Create production batch [**Jobs**](https://docs.anyscale.com/platform/jobs/) for offline workloads (data prep, training, batch prediction) and potentially online [**Services**](https://docs.anyscale.com/platform/services/).
 
 
+### Dependencies
+Install the dependencies using `uv`:
+
+```bash
+uv venv --python 3.12 .venv && source .venv/bin/activate
+uv pip install -r pyproject.toml
+```
+
 
 ### Development
 
