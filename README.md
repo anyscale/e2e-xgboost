@@ -34,6 +34,7 @@ uv sync
 # uv sync --all-extras
 ```
 
+This will create a virtualenv in `.venv` with all the project dependencies.
 
 ### Development
 
