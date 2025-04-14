@@ -11,8 +11,10 @@ FROM anyscale/ray:2.44.1-slim-py312-cu123
 RUN python3 -m pip install --no-cache-dir \
     scikit-learn==1.6.0 \
     mlflow==2.19.0 \
-    xgboost \
-    "ray[data,train,serve]"
+    xgboost==3.0.0 \
+    "ray[data,train,serve]>=2.44.1"
+
+RUN python3 -m pip install --no-cache-dir -e .
 
 # Add other build commands here.
 # RUN echo "Testing Ray import..." && python -c "import ray"
