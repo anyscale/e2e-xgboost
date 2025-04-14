@@ -6,41 +6,42 @@ dependencies = [
     "ipywidgets>=8.1.6",
     "matplotlib==3.10.0",
     "mlflow==2.19.0",
-    "nbformat>=5.10.4",
-    "pre-commit==4.1.0",
     "ray[data,serve,train]>=2.44.1",
     "scikit-learn==1.6.0",
     "xgboost>=3.0.0",
 ]
 
-[tool.black]
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pytest",
+    "mypy",
+    "nbformat>=5.10.4",
+    "pre-commit==4.1.0",
+]
+
+[tool.ruff]
 line-length = 150
-include = "\\.pyi?$"
-exclude = """
-/(
-      .eggs
-    | .git
-    | .hg
-    | .mypy_cache
-    | .tox
-    | venv
-    | _build
-    | buck-out
-    | build
-    | dist
-)/
-"""
+target-version = "py38"
+exclude = [
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".tox",
+    "venv",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+]
 
-[tool.isort]
-profile = "black"
-line_length = 79
-multi_line_output = 3
-include_trailing_comma = true
-virtual_env = "venv"
-
-[tool.flake8]
-exclude = "venv"
+[tool.ruff.lint]
+select = ["E", "F", "I"]
 ignore = ["E501", "W503", "E226"]
-# E501: Line too long
-# W503: Line break occurred before binary operator
-# E226: Missing white space around arithmetic operator
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint.isort]
+profile = "black"
