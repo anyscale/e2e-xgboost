@@ -28,13 +28,17 @@ Install the dependencies using `uv`:
 # Install uv if needed
 # https://docs.astral.sh/uv/getting-started/installation/
 # curl -LsSf https://astral.sh/uv/install.sh | sh
-uv venv --python 3.12 .venv && source .venv/bin/activate
+
+# Install dependencies. Automatically creates .venv
 uv sync
 # For development, install the dev dependencies:
 # uv sync --all-extras
+
+# Activate the uv virutal environment
+source .venv/bin/activate
 ```
 
-This will create a virtualenv in `.venv` with all the project dependencies.
+
 ### Development
 
 We're developing our application on [Anyscale Workspaces](https://docs.anyscale.com/platform/workspaces/), which enables us to develop without thinking about infrastructure, just like we would on a laptop. Workspaces come with:
