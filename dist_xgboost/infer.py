@@ -45,10 +45,10 @@ def confusion_matrix_batch(batch, threshold=0.5):
     return pd.DataFrame(result, index=[0])
 
 
-if __name__ == "__main__":
+def main():
     _, _, test_dataset = prepare_data()
 
-    preprocessor, model = load_model_and_preprocessor()
+    preprocessor, _ = load_model_and_preprocessor()
 
     # Apply the transformation to each batch
     test_dataset = test_dataset.map_batches(
@@ -89,3 +89,7 @@ if __name__ == "__main__":
     print("Validation results:")
     for key, value in metrics.items():
         print(f"{key}: {value:.4f}")
+
+
+if __name__ == "__main__":
+    main()

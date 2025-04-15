@@ -17,7 +17,7 @@ class XGBoostModel:
     def __init__(self):
         self.preprocessor, self.model = load_model_and_preprocessor()
 
-    def pythonic_call(self, input_data: dict) -> dict:
+    def predict_batch(self, input_data: dict) -> dict:
         # Convert to DataFrame
         input_df = pd.DataFrame([input_data])
         # Preprocess the input
@@ -31,13 +31,12 @@ class XGBoostModel:
     async def __call__(self, request: Request) -> dict:
         # Parse the request body as JSON
         input_data = await request.json()
-        return self.pythonic_call(input_data)
+        return self.predict_batch(input_data)
 
 
-xgboost_model = XGBoostModel.bind()
-
-if __name__ == "__main__":
-    handle: DeploymentHandle = serve.run(xgboost_model, name="xgboost-breast-cancer-classifier")
+def main():
+    xgboost_model = XGBoostModel.bind()
+    _handle: DeploymentHandle = serve.run(xgboost_model, name="xgboost-breast-cancer-classifier")
 
     sample_input = {
         "mean radius": 14.9,
@@ -73,8 +72,15 @@ if __name__ == "__main__":
     }
     sample_target = 0
 
+    # create a batch of 100 requests and send them at once
+    sample_input_list = [sample_input] * 100
+
     url = "http://127.0.0.1:8000/"
-    response = requests.post(url, json=sample_input).json()
+    response = requests.post(url, json=sample_input_list).json()
 
     print(f"Prediction: {response['predictions'][0]:.4f}")
     print(f"Ground truth: {sample_target}")
+
+
+if __name__ == "__main__":
+    main()
