@@ -431,7 +431,7 @@ dependencies = [
     { name = "xgboost" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "mypy" },
     { name = "nbformat" },
@@ -446,18 +446,21 @@ requires-dist = [
     { name = "ipywidgets", specifier = ">=8.1.6" },
     { name = "matplotlib", specifier = "==3.10.0" },
     { name = "mlflow", specifier = "==2.19.0" },
-    { name = "mypy", marker = "extra == 'dev'" },
-    { name = "nbformat", marker = "extra == 'dev'", specifier = ">=5.10.4" },
     { name = "numpy", specifier = ">=2.2.4" },
     { name = "pandas", specifier = ">=2.2.3" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = "==4.1.0" },
-    { name = "pytest", marker = "extra == 'dev'" },
     { name = "ray", extras = ["data", "serve", "train"], specifier = ">=2.44.1" },
-    { name = "ruff", marker = "extra == 'dev'" },
     { name = "scikit-learn", specifier = "==1.6.0" },
     { name = "xgboost", specifier = ">=3.0.0" },
 ]
-provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy" },
+    { name = "nbformat", specifier = ">=5.10.4" },
+    { name = "pre-commit", specifier = "==4.1.0" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
 
 [[package]]
 name = "distlib"
