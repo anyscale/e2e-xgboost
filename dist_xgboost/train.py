@@ -63,7 +63,7 @@ def train_fn_per_worker(config: dict):
     )
 
 
-if __name__ == "__main__":
+def main():
     # Load and split the dataset
     train_dataset, valid_dataset, _test_dataset = prepare_data()
 
@@ -119,3 +119,7 @@ if __name__ == "__main__":
 
     log_run_to_mlflow(model_config, result, preprocessor_path)
     print("Training complete")
+
+
+if __name__ == "__main__":
+    main()
