@@ -17,6 +17,7 @@ class XGBoostModel:
     def __init__(self):
         self.preprocessor, self.model = load_model_and_preprocessor()
 
+    @serve.batch(max_batch_size=16, batch_wait_timeout_s=0.1)
     def predict_batch(self, input_data: dict) -> dict:
         # Convert to DataFrame
         input_df = pd.DataFrame([input_data])
