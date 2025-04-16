@@ -119,6 +119,7 @@ def main():
     )
 
     result: Result = trainer.fit()
+    print(f"Training metrics: {result.metrics}")
 
     log_run_to_mlflow(model_config, result, preprocessor_path)
     print("Training complete")
