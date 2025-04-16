@@ -26,8 +26,8 @@ Install the dependencies using `pip`:
 
 ```bash
 pip install -r requirements.txt
-# For development, install the dev dependencies:
-pip install -r requirements_dev.txt
+# For development only, install the dev dependencies:
+# pip install -r requirements_dev.txt
 # Install the dist_xgboost package
 pip install -e .
 ```
