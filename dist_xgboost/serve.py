@@ -4,6 +4,9 @@ import os
 
 os.environ["RAY_TRAIN_V2_ENABLED"] = "1"
 
+import asyncio
+
+import aiohttp
 import pandas as pd
 import requests
 import xgboost
@@ -20,21 +23,23 @@ class XGBoostModel:
         self.preprocessor, self.model = loader()
 
     @serve.batch(max_batch_size=16, batch_wait_timeout_s=0.1)
-    def predict_batch(self, input_data: dict) -> dict:
-        # Convert to DataFrame
-        input_df = pd.DataFrame([input_data])
+    async def predict_batch(self, input_data: list[dict]) -> list[float]:
+        print(f"Batch size: {len(input_data)}")
+        # Convert list of dictionaries to DataFrame
+        input_df = pd.DataFrame(input_data)
+
         # Preprocess the input
         preprocessed_batch = self.preprocessor.transform_batch(input_df)
         # Create DMatrix for prediction
         dmatrix = xgboost.DMatrix(preprocessed_batch)
         # Get predictions
         predictions = self.model.predict(dmatrix)
-        return {"predictions": predictions.tolist()}
+        return predictions.tolist()
 
-    async def __call__(self, request: Request) -> dict:
+    async def __call__(self, request: Request):
         # Parse the request body as JSON
         input_data = await request.json()
-        return self.predict_batch(input_data)
+        return await self.predict_batch(input_data)
 
 
 def main():
@@ -76,13 +81,32 @@ def main():
     sample_target = 0
 
     # create a batch of 100 requests and send them at once
-    sample_input_list = [sample_input] * 100
 
     url = "http://127.0.0.1:8000/"
-    response = requests.post(url, json=sample_input_list).json()
 
-    print(f"Prediction: {response['predictions'][0]:.4f}")
+    # Example with a single request (synchronous call)
+    prediction = requests.post(url, json=sample_input).json()
+    print(f"Prediction: {prediction:.4f}")
     print(f"Ground truth: {sample_target}")
+
+    # Simulate many requests arriving in a short period of time
+    # using asyncio and aiohttp
+
+    sample_input_list = [sample_input] * 100
+
+    async def fetch(session, url, data):
+        async with session.post(url, json=data) as response:
+            return await response.json()
+
+    async def fetch_all():
+        async with aiohttp.ClientSession() as session:
+            tasks = [fetch(session, url, input) for input in sample_input_list]
+            responses = await asyncio.gather(*tasks)
+            return responses
+
+    responses = asyncio.run(fetch_all())
+
+    print(f"First prediction: {responses[0]:.4f}")
 
 
 if __name__ == "__main__":
