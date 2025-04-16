@@ -13,3 +13,4 @@ preprocessor_path = os.path.join(local_storage_path, preprocessor_fname)
 model_fname = "model.ubj"  # name used by XGBoost
 model_registry = os.path.join(local_storage_path, "mlflow")
 experiment_name = "breast_cancer_all_features"
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
