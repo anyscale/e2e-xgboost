@@ -1,3 +1,5 @@
+# Note: requires train.py to be run first for the model and preprocessor to be saved to MLFlow
+
 import os
 
 os.environ["RAY_TRAIN_V2_ENABLED"] = "1"

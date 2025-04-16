@@ -1,3 +1,5 @@
+# Note: requires train.py to be run first for the model and preprocessor to be saved to MLFlow
+
 import os
 
 os.environ["RAY_TRAIN_V2_ENABLED"] = "1"
@@ -14,8 +16,8 @@ from dist_xgboost.data import load_model_and_preprocessor
 
 @serve.deployment
 class XGBoostModel:
-    def __init__(self):
-        self.preprocessor, self.model = load_model_and_preprocessor()
+    def __init__(self, loader):
+        self.preprocessor, self.model = loader()
 
     @serve.batch(max_batch_size=16, batch_wait_timeout_s=0.1)
     def predict_batch(self, input_data: dict) -> dict:
@@ -36,7 +38,7 @@ class XGBoostModel:
 
 
 def main():
-    xgboost_model = XGBoostModel.bind()
+    xgboost_model = XGBoostModel.bind(load_model_and_preprocessor)
     _handle: DeploymentHandle = serve.run(xgboost_model, name="xgboost-breast-cancer-classifier")
 
     sample_input = {
