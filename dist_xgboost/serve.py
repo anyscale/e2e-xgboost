@@ -17,9 +17,11 @@ from starlette.requests import Request
 from dist_xgboost.data import load_model_and_preprocessor
 
 
-@serve.deployment
+@serve.deployment(num_replicas=2, ray_actor_options={"num_cpus": 2})
 class XGBoostModel:
     def __init__(self, loader):
+        # pass in loader function from the outer context to
+        # make it easier to mock during testing
         self.preprocessor, self.model = loader()
 
     @serve.batch(max_batch_size=16, batch_wait_timeout_s=0.1)
@@ -27,7 +29,6 @@ class XGBoostModel:
         print(f"Batch size: {len(input_data)}")
         # Convert list of dictionaries to DataFrame
         input_df = pd.DataFrame(input_data)
-
         # Preprocess the input
         preprocessed_batch = self.preprocessor.transform_batch(input_df)
         # Create DMatrix for prediction
@@ -89,7 +90,7 @@ def main():
     print(f"Prediction: {prediction:.4f}")
     print(f"Ground truth: {sample_target}")
 
-    # Simulate many requests arriving in a short period of time
+    # Send many requests at once instead of blocking after each request
     # using asyncio and aiohttp
 
     sample_input_list = [sample_input] * 100
@@ -98,13 +99,13 @@ def main():
         async with session.post(url, json=data) as response:
             return await response.json()
 
-    async def fetch_all():
+    async def fetch_all(requests: list):
         async with aiohttp.ClientSession() as session:
-            tasks = [fetch(session, url, input) for input in sample_input_list]
+            tasks = [fetch(session, url, input) for input in requests]
             responses = await asyncio.gather(*tasks)
             return responses
 
-    responses = asyncio.run(fetch_all())
+    responses = asyncio.run(fetch_all(sample_input_list))
 
     print(f"First prediction: {responses[0]:.4f}")
 
