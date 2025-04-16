@@ -14,6 +14,9 @@ from ray.train.xgboost import RayTrainReportCallback, XGBoostTrainer
 from dist_xgboost.constants import local_storage_path, preprocessor_path
 from dist_xgboost.data import log_run_to_mlflow, prepare_data
 
+NUM_WORKERS = 5
+USE_GPU = True
+
 
 def train_preprocessor(train_dataset: ray.data.Dataset) -> StandardScaler:
     # pick some dataset columns to scale
@@ -93,9 +96,9 @@ def main():
     # Define the scaling config
     scaling_config = ScalingConfig(
         # Number of workers to use for data parallelism.
-        num_workers=5,
+        num_workers=NUM_WORKERS,
         # Whether to use GPU acceleration. Set to True to schedule GPU workers.
-        use_gpu=True,
+        use_gpu=USE_GPU,
     )
 
     # Params that will be passed to the base XGBoost model.

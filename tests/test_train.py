@@ -1,14 +1,18 @@
 from unittest.mock import patch
 
+import ray
+
 from dist_xgboost.train import main
 
 
 @patch("dist_xgboost.train.log_run_to_mlflow")
 @patch("dist_xgboost.train.save_preprocessor")
-def test_main_execution(mock_save_preprocessor, mock_log_run):
-    # Run the main function with mocked artifact saving
+@patch("dist_xgboost.train.local_storage_path", new=None)
+@patch("dist_xgboost.train.NUM_WORKERS", new=1)  # FIXME: comment out to run the test
+@patch("dist_xgboost.train.USE_GPU", new=False)  # FIXME: comment out to run the test
+def test_main_execution(mock_log_run_to_mlflow, mock_save_preprocessor):
+    ray.data.DataContext.log_internal_stack_trace_to_stdout = True
     main()
 
-    # Verify mocks were called
     mock_save_preprocessor.assert_called_once()
-    mock_log_run.assert_called_once()
+    mock_log_run_to_mlflow.assert_called_once()
