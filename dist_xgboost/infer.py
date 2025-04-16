@@ -22,6 +22,8 @@ def transform_with_preprocessor(batch_df, preprocessor):
 
 class Validator:
     def __init__(self, loader):
+        # pass in loader function from the outer scope to
+        # make it easier to mock during testing
         _, self.model = loader()
 
     def __call__(self, batch: pd.DataFrame) -> pd.DataFrame:
