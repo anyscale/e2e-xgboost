@@ -19,8 +19,8 @@ def transform_with_preprocessor(batch_df, preprocessor):
 
 
 class Validator:
-    def __init__(self):
-        _, self.model = load_model_and_preprocessor()
+    def __init__(self, loader):
+        _, self.model = loader()
 
     def __call__(self, batch: pd.DataFrame) -> pd.DataFrame:
         # remove the target column for inference
@@ -53,7 +53,7 @@ def main():
     # Apply the transformation to each batch
     test_dataset = test_dataset.map_batches(
         transform_with_preprocessor,
-        fn_constructor_kwargs={"preprocessor": preprocessor},
+        fn_kwargs={"preprocessor": preprocessor},
         batch_format="pandas",
         batch_size=1000,
     )
@@ -61,6 +61,7 @@ def main():
     # Make predictions
     test_predictions = test_dataset.map_batches(
         Validator,
+        fn_constructor_kwargs={"loader": load_model_and_preprocessor},
         concurrency=4,  # Number of model replicas
         batch_format="pandas",
     )
