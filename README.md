@@ -32,6 +32,8 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
+Note that this tutorial requires ray>=2.44.1.
+
 ### Development
 
 We're developing our application on [Anyscale Workspaces](https://docs.anyscale.com/platform/workspaces/), which enables us to develop without thinking about infrastructure, just like we would on a laptop. Workspaces come with:
