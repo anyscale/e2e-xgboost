@@ -48,6 +48,9 @@ def load_model_and_preprocessor():
     checkpoint = Checkpoint.from_directory(best_artifacts_dir)
     model = RayTrainReportCallback.get_model(checkpoint)
 
+    # ensure the model is set to use GPUs
+    model.set_param({"device": "cuda"})
+    
     return preprocessor, model
 
 

@@ -30,7 +30,9 @@ class Validator:
         # remove the target column for inference
         target = batch.pop("target")
         dmatrix = xgboost.DMatrix(batch)
-        predictions = self.model.predict(dmatrix)
+        predictions = self.model.inplace_predict(dmatrix)
+        # convert cupy array to numpy array
+        predictions = predictions.get()
 
         results = pd.DataFrame({"prediction": predictions, "target": target})
         return results
@@ -68,6 +70,7 @@ def main():
         fn_constructor_kwargs={"loader": load_model_and_preprocessor},
         concurrency=4,  # Number of model replicas
         batch_format="pandas",
+        num_gpus=1,
     )
 
     # Calculate confusion matrix
