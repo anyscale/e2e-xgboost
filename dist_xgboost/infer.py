@@ -71,6 +71,7 @@ def main():
         concurrency=4,  # Number of model replicas
         batch_format="pandas",
         num_gpus=1,
+        batch_size=50,
     )
 
     # Calculate confusion matrix
