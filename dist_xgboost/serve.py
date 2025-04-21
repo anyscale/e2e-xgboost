@@ -17,7 +17,7 @@ from starlette.requests import Request
 from dist_xgboost.data import load_model_and_preprocessor
 
 
-@serve.deployment(num_replicas=2, ray_actor_options={"num_gpus": 1})
+@serve.deployment(num_replicas=4, ray_actor_options={"num_gpus": 1})
 class XGBoostModel:
     def __init__(self, loader):
         # pass in loader function from the outer context to
