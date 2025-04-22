@@ -36,12 +36,22 @@ def save_preprocessor(preprocessor: StandardScaler):
 
 
 def train_fn_per_worker(config: dict):
+    """Training function that runs on each worker.
+
+    This function:
+    1. Gets the dataset shard for this worker
+    2. Converts to pandas for XGBoost
+    3. Separates features and labels
+    4. Creates DMatrix objects
+    5. Trains the model using distributed communication
+    """
     # Get this worker's dataset shard convert
     train_ds, val_ds = (
         ray.train.get_dataset_shard("train"),
         ray.train.get_dataset_shard("validation"),
     )
 
+    # Materialize the data and convert to pandas
     train_ds = train_ds.materialize().to_pandas()
     val_ds = val_ds.materialize().to_pandas()
 
