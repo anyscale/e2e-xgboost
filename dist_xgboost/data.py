@@ -50,7 +50,7 @@ def load_model_and_preprocessor():
 
     # ensure the model is set to use GPUs
     model.set_param({"device": "cuda"})
-    
+
     return preprocessor, model
 
 
