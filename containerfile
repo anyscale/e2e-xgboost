@@ -5,14 +5,11 @@ FROM anyscale/ray:2.44.1-slim-py312-cu123
 #     && sudo apt-get install --no-install-recommends -y <package1> <package2> \
 #     && sudo rm -f /etc/apt/sources.list.d/*
 
-
+# Copy the project code into the container
+COPY --chown=ray:ray e2e_xgboost /home/ray/default
 # Install dependencies
 # Disable cache for a smaller image to optimize build and cluster startup time.
-RUN python3 -m pip install --no-cache-dir \
-    scikit-learn==1.6.0 \
-    mlflow==2.19.0 \
-    xgboost==3.0.0 \
-    "ray[data,train,serve]>=2.44.1"
+RUN python3 -m pip install --no-cache-dir requirements.txt
 
 # Add other build commands here.
 # RUN echo "Testing Ray import..." && python -c "import ray"
