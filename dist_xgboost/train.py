@@ -113,10 +113,8 @@ def main():
     # Params that will be passed to the base XGBoost model.
     config = {
         "model_config": {
-            "xgboost_params": {
-                "objective": "binary:logistic",
-                "eval_metric": ["logloss", "error"],
-            }
+            "objective": "binary:logistic",
+            "eval_metric": ["logloss", "error"],
         },
         "checkpoint_frequency": 10,
     }
