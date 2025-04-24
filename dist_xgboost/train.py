@@ -68,7 +68,7 @@ def train_fn_per_worker(config: dict):
     # environment variables for your workers to communicate with each other.
     # it also handles checkpointing via the `RayTrainReportCallback`
     _booster = xgboost.train(
-        config["xgboost_params"],
+        config["model_config"],
         dtrain=dtrain,
         evals=[(dtrain, "train"), (deval, "validation")],
         num_boost_round=10,
@@ -76,7 +76,7 @@ def train_fn_per_worker(config: dict):
             RayTrainReportCallback(
                 frequency=config["checkpoint_frequency"],
                 checkpoint_at_end=True,
-                metrics=config["xgboost_params"]["eval_metric"],
+                metrics=config["model_config"]["eval_metric"],
             )
         ],
     )
@@ -119,7 +119,7 @@ def main():
         "checkpoint_frequency": 10,
     }
     if USE_GPU:
-        config["model_config"]["xgboost_params"]["device"] = "cuda"
+        config["model_config"]["device"] = "cuda"
 
     trainer = XGBoostTrainer(
         train_fn_per_worker,
