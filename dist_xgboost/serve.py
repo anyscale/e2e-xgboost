@@ -34,7 +34,7 @@ class XGBoostModel:
         # Create DMatrix for prediction
         dmatrix = xgboost.DMatrix(preprocessed_batch)
         # Get predictions
-        predictions = self.model.inplace_predict(dmatrix)
+        predictions = self.model.predict(dmatrix)
         # convert cupy array to list
         return predictions.tolist()
 

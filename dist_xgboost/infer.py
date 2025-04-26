@@ -30,9 +30,7 @@ class Validator:
         # remove the target column for inference
         target = batch.pop("target")
         dmatrix = xgboost.DMatrix(batch)
-        predictions = self.model.inplace_predict(dmatrix)
-        # convert cupy array to numpy array
-        predictions = predictions.get()
+        predictions = self.model.predict(dmatrix)
 
         results = pd.DataFrame({"prediction": predictions, "target": target})
         return results
