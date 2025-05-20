@@ -63,10 +63,10 @@ Below is a list of infrastructure headaches Anyscale removes so you can focus on
 **🚀 1. Fast Workload Launch**
 * With Kubernetes (Amazon Elastic Kubernetes Service/Google Kubernetes Engine), you must manually create a cluster before launching anything.
 * This includes setting up VPCs, Identity and Access Management roles, node pools, autoscaling, etc.
-* Anyscale handles all of this automatically-- you just define your job or endpoint and run it.
+* Anyscale handles all of this automatically; you just define your job or endpoint and run it.
 
 **⚙️ 2. No GPU Driver Hassles**
-* Kubernetes requires you to install and manage Nvidia drivers and the device plugin for GPU workloads.
+* Kubernetes requires you to install and manage NVIDIA drivers and the device plugin for GPU workloads.
 * On Anyscale, GPU environments just work—drivers, libraries, and runtime are pre-configured.
 
 **📦 3. No KubeRay or CRD Management**
