@@ -74,7 +74,7 @@ Below is a list of infrastructure headaches Anyscale removes so you can focus on
     * Installing KubeRay
     * Writing and maintaining custom YAML manifests
     * Managing Custom Resource Definitions
-    * Tuning stateful sets and pod configs
+    * Tuning stateful sets and pod configuration
 * On Anyscale, this is all abstracted—you launch Ray clusters without writing a single YAML file.
 
 **🧠 4. No Need to Learn K8s Internals**
