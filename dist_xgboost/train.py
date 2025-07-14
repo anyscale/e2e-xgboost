@@ -8,13 +8,14 @@ os.environ["RAY_TRAIN_V2_ENABLED"] = "1"
 import ray
 import xgboost
 from ray.data.preprocessors import StandardScaler
-from ray.train import Result, RunConfig, ScalingConfig
+from ray.train import CheckpointConfig, Result, RunConfig, ScalingConfig
 from ray.train.xgboost import RayTrainReportCallback, XGBoostTrainer
 
-from dist_xgboost.constants import local_storage_path, preprocessor_path
+from dist_xgboost.constants import storage_path, preprocessor_path
 from dist_xgboost.data import log_run_to_mlflow, prepare_data
+import dist_xgboost
 
-NUM_WORKERS = 4
+NUM_WORKERS = 5
 USE_GPU = True
 
 
@@ -36,22 +37,12 @@ def save_preprocessor(preprocessor: StandardScaler):
 
 
 def train_fn_per_worker(config: dict):
-    """Training function that runs on each worker.
-
-    This function:
-    1. Gets the dataset shard for this worker
-    2. Converts to pandas for XGBoost
-    3. Separates features and labels
-    4. Creates DMatrix objects
-    5. Trains the model using distributed communication
-    """
     # Get this worker's dataset shard convert
     train_ds, val_ds = (
         ray.train.get_dataset_shard("train"),
         ray.train.get_dataset_shard("validation"),
     )
 
-    # Materialize the data and convert to pandas
     train_ds = train_ds.materialize().to_pandas()
     val_ds = val_ds.materialize().to_pandas()
 
@@ -68,21 +59,16 @@ def train_fn_per_worker(config: dict):
     # environment variables for your workers to communicate with each other.
     # it also handles checkpointing via the `RayTrainReportCallback`
     _booster = xgboost.train(
-        config["model_config"],
+        config["xgboost_params"],
         dtrain=dtrain,
         evals=[(dtrain, "train"), (deval, "validation")],
         num_boost_round=10,
-        callbacks=[
-            RayTrainReportCallback(
-                frequency=config["checkpoint_frequency"],
-                checkpoint_at_end=True,
-                metrics=config["model_config"]["eval_metric"],
-            )
-        ],
+        callbacks=[RayTrainReportCallback()],
     )
 
 
 def main():
+    ray.init(runtime_env={"py_modules": [dist_xgboost]})
     # Load and split the dataset
     train_dataset, valid_dataset, _test_dataset = prepare_data()
 
@@ -95,11 +81,18 @@ def main():
     train_dataset = preprocessor.transform(train_dataset)
     valid_dataset = preprocessor.transform(valid_dataset)
 
+    # Configure checkpointing to save progress during training
     run_config = RunConfig(
+        checkpoint_config=CheckpointConfig(
+            # Checkpoint every 10 iterations.
+            checkpoint_frequency=10,
+            # Only keep the latest checkpoint.
+            num_to_keep=1,
+        ),
         ## If running in a multi-node cluster, this is where you
         ## should configure the run's persistent storage that is accessible
         ## across all worker nodes with `storage_path="s3://..."`
-        storage_path=local_storage_path,
+        storage_path=storage_path,
     )
 
     # Define the scaling config
@@ -111,19 +104,16 @@ def main():
     )
 
     # Params that will be passed to the base XGBoost model.
-    config = {
-        "model_config": {
+    model_config = {
+        "xgboost_params": {
             "objective": "binary:logistic",
             "eval_metric": ["logloss", "error"],
-        },
-        "checkpoint_frequency": 10,
+        }
     }
-    if USE_GPU:
-        config["model_config"]["device"] = "cuda"
 
     trainer = XGBoostTrainer(
         train_fn_per_worker,
-        train_loop_config=config,
+        train_loop_config=model_config,
         # Register the data subsets.
         datasets={"train": train_dataset, "validation": valid_dataset},
         scaling_config=scaling_config,
@@ -133,7 +123,7 @@ def main():
     result: Result = trainer.fit()
     print(f"Training metrics: {result.metrics}")
 
-    log_run_to_mlflow(config["model_config"], result, preprocessor_path)
+    log_run_to_mlflow(model_config, result, preprocessor_path)
     print("Training complete")
 
 

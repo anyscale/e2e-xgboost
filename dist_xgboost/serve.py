@@ -17,7 +17,7 @@ from starlette.requests import Request
 from dist_xgboost.data import load_model_and_preprocessor
 
 
-@serve.deployment(num_replicas=4, ray_actor_options={"num_gpus": 1})
+@serve.deployment(num_replicas=2, ray_actor_options={"num_cpus": 2})
 class XGBoostModel:
     def __init__(self, loader):
         # pass in loader function from the outer context to
@@ -35,7 +35,6 @@ class XGBoostModel:
         dmatrix = xgboost.DMatrix(preprocessed_batch)
         # Get predictions
         predictions = self.model.predict(dmatrix)
-        # convert cupy array to list
         return predictions.tolist()
 
     async def __call__(self, request: Request):
@@ -44,10 +43,13 @@ class XGBoostModel:
         return await self.predict_batch(input_data)
 
 
-def main():
-    xgboost_model = XGBoostModel.bind(load_model_and_preprocessor)
-    _handle: DeploymentHandle = serve.run(xgboost_model, name="xgboost-breast-cancer-classifier")
+xgboost_model = XGBoostModel.bind(load_model_and_preprocessor)
+_handle: DeploymentHandle = serve.run(
+    xgboost_model, name="xgboost-breast-cancer-classifier"
+)
 
+
+def main():
     sample_input = {
         "mean radius": 14.9,
         "mean texture": 22.53,
